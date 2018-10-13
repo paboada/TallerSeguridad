@@ -20,7 +20,7 @@ public class Main
 
         while (option != 0) {
             try {
-            	System.out.println("---------------------- >> PRUEBA!!!! << ----------------------");
+            	System.out.println("---------------------- >> PROBANDO UN NUEVO CAMBIO << ----------------------");
                 System.out.println("---------------------- >> SSE Lab << ----------------------");
                 System.out.println("Choose one of the following options: ");
                 System.out.println("1: Test the 2Lev implementation (Static scheme)");
