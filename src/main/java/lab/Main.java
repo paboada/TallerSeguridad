@@ -20,8 +20,12 @@ public class Main
 
         while (option != 0) {
             try {
-            	System.out.println("---------------------- >> PROBANDO UN NUEVO CAMBIO << ----------------------");
-                System.out.println("---------------------- >> SSE Lab << ----------------------");
+            	System.out.println(">>>>>>>>>>>>>>>>>>>   TALLER DE SEGURIDAD   <<<<<<<<<<<<<<<<<<<");
+            	System.out.println("");
+            	System.out.println(">>Se hacen modificaciones sobre el codigo inicial con el objetivo de realizar lo propuesto en el taller.");
+            	System.out.println(">>Cambios realizados por: Yeison Javier Cuitiva; Pablo Andres Boada");
+            	System.out.println("");
+                System.out.println("---------------------- >>      SSE Lab       << ----------------------");
                 System.out.println("Choose one of the following options: ");
                 System.out.println("1: Test the 2Lev implementation (Static scheme)");
                 System.out.println("2: Test the DynRH implementation (Dynamic scheme)");

@@ -12,7 +12,13 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
 
+import javax.crypto.Cipher;
+
 public class TestDynRH {
+	
+	//Ini Pablo/Yeison
+	public static HashMap<String, String> Rutas = new HashMap<>();
+	//Fin Pablo/Yeison
 
     private static BufferedReader reader;
 
@@ -26,6 +32,8 @@ public class TestDynRH {
 
         while (option != 0) {
             try {
+            	System.out.println(">>>>>>>>>>>>>>>>>>>   TALLER DE SEGURIDAD   <<<<<<<<<<<<<<<<<<<");
+            	System.out.println("");
                 System.out.println("---------------SSE Lab - DynnRH (Dynamic Implementation)---------------");
                 System.out.println("Choose one of the following options: ");
                 System.out.println("1: Test indexing and query");
@@ -72,7 +80,7 @@ public class TestDynRH {
         HashMap<String, byte[]> index = null;
         if(option == 1)
         {
-            key = generateKey();
+            key = generateKey("keyTallerDynRH");
 
             if(key == null) return;
 
@@ -139,6 +147,7 @@ public class TestDynRH {
 
     public static void test2( ) throws InputMismatchException, IOException, NumberFormatException, ClassNotFoundException
     {
+    	System.out.println("Inicia metodo test2()");
         System.out.println("------------------------------------------------------------------------");
         System.out.println("--------------> Choose one of the following options: <------------------");
         System.out.println("1. Encrypt and index a new set of files.");
@@ -150,20 +159,31 @@ public class TestDynRH {
         byte[] key = null;
         HashMap<String, byte[]> index = null;
         String pathName = "";
-
-        if(option == 1)
+        
+         if(option == 1)
         {
-            key = generateKey();
+        	System.out.println("Opcion 1 elegida");
+        	System.out.println("--------------Generando llave--------------");
+            key = generateKey("keyTallerDynRH");
+            System.out.println("--------------Llave generada--------------");
 
             if(key == null) return;
 
             System.out.println("Enter the absolute path name of the FOLDER that contains the files that you want to encrypt and make searchable.");
-            pathName = reader.readLine();
+            pathName = reader.readLine();      
+            System.out.println("--------------Construyendo indice--------------");
             index = buildIndex(key, pathName);
-
+            System.out.println("--------------Indice Construido--------------");
             if(index == null) return;
-
-            //Complete
+            
+          //Complete
+          //ini Pablo/Yeison   
+        		ArrayList<File> ListaArchivos = new ArrayList<File>();        		
+	            TextProc.listf(pathName, ListaArchivos);
+	            System.out.println("Archivos encontrados en directorio ingresado: " + ListaArchivos.size());
+	            addElementstoHashMap(ListaArchivos, key);
+          //fin Pablo/Yeison          
+            
         }
         else if (option == 2)
         {
@@ -192,6 +212,7 @@ public class TestDynRH {
             System.out.println("1: Add new files to your index");
             System.out.println("2: Delete key-value tuples from your index");
             System.out.println("3: Perform queries over your files using SSE");
+            System.out.println("4: Ver elementos en tabla de rutas");
             System.out.println("0: Return");
             System.out.println("-----------------------------------------------------------");
 
@@ -206,6 +227,13 @@ public class TestDynRH {
                     updateIndex(key, index, pathName);
 
                     //Complete
+                    //ini Pablo/Yeison   
+		            		ArrayList<File> ListaArchivos = new ArrayList<File>();  
+		    	            TextProc.listf(pathName, ListaArchivos);
+		    	            System.out.println("Archivos encontrados en directorio ingresado: " + ListaArchivos.size());
+		    	            addElementstoHashMap(ListaArchivos, key);		    	            
+                    //fin Pablo/Yeison 
+                    
                     break;
                 case 2:
                     System.out.println("Enter a keyword that appears in some file whose key-value pair you want to delete (only use lowercase letters):");
@@ -216,6 +244,9 @@ public class TestDynRH {
                     break;
                 case 3:
                     queryToolWithDecryption(key, index);
+                    break;
+                case 4:
+                    verElementosTabla();
                     break;
                 default:
                     System.out.println("You did not select a valid number. Try Again.");
@@ -228,6 +259,10 @@ public class TestDynRH {
 
     public static void queryToolWithDecryption(byte[] key, HashMap<String, byte[]> index) throws IOException
     {
+    	 //Ini Pablo
+    	  String pathName_descifrar = "";
+    	 //Fin Pablo
+    			 
         System.out.println("\n --------------- >> SSE Lab - Query Tool << ---------------\n");
         while(true)
         {
@@ -241,6 +276,12 @@ public class TestDynRH {
             List<String> ans = query(key, index, keyword);
 
             int size = ans.size();
+            
+            //Ini Pablo
+            	String[] ListaNombreArchivos = new String[size];
+            	File[] ListaFiltrada = new File[ans.size()];
+            //Fin Pablo
+            
             if(size > 0)
             {
                 System.out.println("------------------------------------------------------------------------");
@@ -255,7 +296,23 @@ public class TestDynRH {
 
                     if(decrypt == 1)
                     {
-                        //Complete
+                    	//Complete
+                    	
+                        //Ini Pablo/Yeison
+                    	System.out.println("\n Por favor ingrese la ruta donde desea descifrar los archivos encontrados");
+                    	pathName_descifrar = reader.readLine();
+                    	for (int i = 0; i < ans.size(); i++){
+        	                //System.out.printf("%s ", ans.get(i));
+        	                //System.out.println(" ");
+        	                ListaNombreArchivos[i]=ans.get(i);
+        	                System.out.println("Descifrando archivo " + (i+1));
+        	                //System.out.println(ListaNombreArchivos[i] + "ubicado en: " +  Rutas.get(ans.get(i)));
+        	                ListaFiltrada[i] = new File(Rutas.get(ans.get(i)) + "\\" + ListaNombreArchivos[i]) ;
+        	                System.out.println(ListaFiltrada[i]);
+        	                Utils.decryptFiles(ListaFiltrada, key, pathName_descifrar);
+        	            } 
+                    	//Fin Pablo/Yeison
+
                     }
                 }
                 catch(InputMismatchException | NumberFormatException e)
@@ -303,7 +360,7 @@ public class TestDynRH {
     }
 
 
-    public static byte[] generateKey() {
+    public static byte[] generateKey(String name) {
         byte[] key = null;
         try {
             System.out.println("Enter a password as a seed for the key generation:");
@@ -315,7 +372,7 @@ public class TestDynRH {
             System.out.println("Enter the absolute path name of the FOLDER where you want to save the secret key");
 
             String pathName2 = reader.readLine();
-            Utils.saveObject(pathName2 + File.separator + "keyDynRH", key);
+            Utils.saveObject(pathName2 + File.separator + name, key);
 
         } catch (Exception exp) {
             System.out.println();
@@ -331,9 +388,8 @@ public class TestDynRH {
         HashMap<String, byte[]> emm = null;
         try
         {
-            ArrayList<File> listOfFile = new ArrayList<File>();
-            TextProc.listf(pathName, listOfFile);
-
+            ArrayList<File> listOfFile = new ArrayList<File>();           
+            TextProc.listf(pathName, listOfFile);            
             TextProc.TextProc(false, pathName);
 
             // Construction of the encrypted multi-map
@@ -474,4 +530,52 @@ public class TestDynRH {
             System.out.println(exp.getMessage());
         }
     }
+    
+  //ini Pablo/Yeison
+
+  	public static void addElementstoHashMap(ArrayList<File> ListaArchivos, byte[] key) {
+  		
+  		System.out.println("Elementos en tabla antes de agregar: " + Rutas.size());
+  		String ruta = null, ruta_nombre, nombre_archivo; 
+  		for (int i = 0; i < ListaArchivos.size(); i++){        	
+        	ruta_nombre = ListaArchivos.get(i).toString();
+        	nombre_archivo = ruta_nombre.substring(ListaArchivos.get(i).toString().lastIndexOf("\\")+1, ruta_nombre.length());
+            ruta = ruta_nombre.substring(0, ListaArchivos.get(i).toString().lastIndexOf("\\"));	                
+            //System.out.println(ruta_nombre);
+            System.out.println("Se agrego a la tabla el archivo: " + nombre_archivo);
+            //System.out.println(ruta);	            
+            //la tabla ya controla la repeticion de archivos ya que es (key, value), si encuentra un nuevo archivo en el directorio, lo agrega
+            //sin duplicar los ya registrados
+            Rutas.put(nombre_archivo, ruta);
+            System.out.println(".....Cifrando archivos");
+            Utils.cifrar_archivo(ListaArchivos.get(i), key);
+            System.out.println("Archivos cifrados!!!!!!!!!!!!");
+        }        
+        System.out.println("Elementos actuales en tabla: " + Rutas.size());
+        System.out.println("TABLA DE RUTAS:");
+        //System.out.println(Collections.singletonList(Rutas));
+        
+        /*Set<String> keys = Rutas.keySet();
+        for (String i : keys) {
+            System.out.println(i);
+            System.out.println(Rutas.get(i));
+        }*/
+           
+  	}
+  	
+  	public static void verElementosTabla() {
+  		System.out.println("Elementos actuales en tabla: " + Rutas.size());
+        System.out.println("TABLA DE RUTAS:");
+        
+        Set<String> keys = Rutas.keySet();
+        for (String i : keys) {
+            System.out.println(i + "|" + Rutas.get(i));
+
+        }
+  		
+  	}
+  	
+  	
+  //Fin Pablo/Yeison
+
 }
