@@ -138,7 +138,7 @@ public class Utils
     {
         System.out.println("Decrypting FILE: " + origin.getName());
         SecretKeySpec key = new SecretKeySpec(keyBytes, 0, keyBytes.length, algorithm);
-        cipher.init(Cipher.DECRYPT_MODE, key);
+        cipher.init(Cipher.DECRYPT_MODE, key);   
         writeToFile(origin, cipher, destiny);
     }
 
@@ -155,39 +155,6 @@ public class Utils
         out.close();
         in.close();
     }
-    
-    
-    
-    //Ini Pablo/Yeison
-    //Cifra un solo archivo y no una lista de archivos de una ruta
-    public static void cifrar_archivo(File archivo, byte[] keyBytes)
-    {
-        System.out.println("\n \n Inicia cifrado del archivo recibido \n");
-
-        try
-        {
-            Cipher cipher = Cipher.getInstance(ALGORITHM);
-                try
-                {
-                    encryptFile(archivo, cipher, keyBytes, ALGORITHM);
-                }
-                catch (InvalidKeyException | IllegalBlockSizeException | BadPaddingException
-                        | IOException e) {
-                    //System.err.println("Couldn't encrypt " + archivo + ": " + e.getMessage());
-                    System.out.println(archivo + " ya fue encriptado anteriormente!!!!!!!!!!!!!!!!");
-                    //e.printStackTrace();
-                }
-            System.out.println("\n Archivo Encriptado!");
-        }
-        catch (NoSuchAlgorithmException | NoSuchPaddingException e)
-        {
-            System.err.println(e.getMessage());
-        }
-    }
-    
-    //Fin Pablo/Yeison
-    
-    
 }
 
 

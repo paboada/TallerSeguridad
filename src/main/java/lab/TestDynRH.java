@@ -18,6 +18,7 @@ public class TestDynRH {
 	
 	//Ini Pablo/Yeison
 	public static HashMap<String, String> Rutas = new HashMap<>();
+	//public static String separador_ruta = "\\";
 	//Fin Pablo/Yeison
 
     private static BufferedReader reader;
@@ -147,7 +148,7 @@ public class TestDynRH {
 
     public static void test2( ) throws InputMismatchException, IOException, NumberFormatException, ClassNotFoundException
     {
-    	System.out.println("Inicia metodo test2()");
+    	System.out.println("Cambios realizados por: Yeison Javier Cuitiva; Pablo Andres Boada");
         System.out.println("------------------------------------------------------------------------");
         System.out.println("--------------> Choose one of the following options: <------------------");
         System.out.println("1. Encrypt and index a new set of files.");
@@ -162,13 +163,10 @@ public class TestDynRH {
         
          if(option == 1)
         {
-        	System.out.println("Opcion 1 elegida");
         	System.out.println("--------------Generando llave--------------");
             key = generateKey("keyTallerDynRH");
             System.out.println("--------------Llave generada--------------");
-
             if(key == null) return;
-
             System.out.println("Enter the absolute path name of the FOLDER that contains the files that you want to encrypt and make searchable.");
             pathName = reader.readLine();      
             System.out.println("--------------Construyendo indice--------------");
@@ -176,13 +174,15 @@ public class TestDynRH {
             System.out.println("--------------Indice Construido--------------");
             if(index == null) return;
             
-          //Complete
-          //ini Pablo/Yeison   
-        		ArrayList<File> ListaArchivos = new ArrayList<File>();        		
-	            TextProc.listf(pathName, ListaArchivos);
-	            System.out.println("Archivos encontrados en directorio ingresado: " + ListaArchivos.size());
-	            addElementstoHashMap(ListaArchivos, key);
-          //fin Pablo/Yeison          
+            
+	        //Complete
+	        //ini Pablo/Yeison 
+            		//1.a.Crear una lista de archivos de los contendidos en la ruta ingresada por parametro
+	        		ArrayList<File> ListaArchivos = new ArrayList<File>();        		
+		            TextProc.listf(pathName, ListaArchivos);
+		            System.out.println("Numero de archivos encontrados en directorio ingresado: " + ListaArchivos.size());
+		            addElementstoHashMap(ListaArchivos, key);
+	        //fin Pablo/Yeison          
             
         }
         else if (option == 2)
@@ -225,12 +225,13 @@ public class TestDynRH {
                     System.out.println("Enter the absolute path name of the folder that contains the files to add:");
                     pathName = reader.readLine();
                     updateIndex(key, index, pathName);
-
                     //Complete
                     //ini Pablo/Yeison   
+                    		//2.a. crear la lista de archivos
 		            		ArrayList<File> ListaArchivos = new ArrayList<File>();  
 		    	            TextProc.listf(pathName, ListaArchivos);
-		    	            System.out.println("Archivos encontrados en directorio ingresado: " + ListaArchivos.size());
+		    	            System.out.println("Numero de archivos encontrados en directorio ingresado: " + ListaArchivos.size());
+		    	            //2.b y 2.c
 		    	            addElementstoHashMap(ListaArchivos, key);		    	            
                     //fin Pablo/Yeison 
                     
@@ -274,13 +275,9 @@ public class TestDynRH {
             if(keyword.equals(".")) break;
 
             List<String> ans = query(key, index, keyword);
-
+            System.out.println("Final Result: " + ans);
             int size = ans.size();
             
-            //Ini Pablo
-            	String[] ListaNombreArchivos = new String[size];
-            	File[] ListaFiltrada = new File[ans.size()];
-            //Fin Pablo
             
             if(size > 0)
             {
@@ -296,21 +293,24 @@ public class TestDynRH {
 
                     if(decrypt == 1)
                     {
-                    	//Complete
-                    	
+                    	//Complete                    	
                         //Ini Pablo/Yeison
-                    	System.out.println("\n Por favor ingrese la ruta donde desea descifrar los archivos encontrados");
-                    	pathName_descifrar = reader.readLine();
-                    	for (int i = 0; i < ans.size(); i++){
-        	                //System.out.printf("%s ", ans.get(i));
-        	                //System.out.println(" ");
-        	                ListaNombreArchivos[i]=ans.get(i);
-        	                System.out.println("Descifrando archivo " + (i+1));
-        	                //System.out.println(ListaNombreArchivos[i] + "ubicado en: " +  Rutas.get(ans.get(i)));
-        	                ListaFiltrada[i] = new File(Rutas.get(ans.get(i)) + "\\" + ListaNombreArchivos[i]) ;
-        	                System.out.println(ListaFiltrada[i]);
-        	                Utils.decryptFiles(ListaFiltrada, key, pathName_descifrar);
-        	            } 
+		                    	//3.a
+		                    	System.out.println("\n Por favor ingrese la ruta donde desea descifrar los archivos encontrados");
+		                    	pathName_descifrar = reader.readLine();
+		                    	//3.b
+		                    	String[] ListaNombreArchivos = new String[ans.size()];
+		                    	File[] ListaFiltrada = new File[ans.size()];		                        
+		                    	for (int i = 0; i < ans.size(); i++){
+		                    		//3.c
+		        	                ListaNombreArchivos[i]=ans.get(i);
+		        	                String ruta = Rutas.get(ans.get(i)) + File.separator + ListaNombreArchivos[i];
+		        	                System.out.println(ruta);
+		        	                ListaFiltrada[i] = new File(ruta) ;		        	                        	                
+		        	            } 
+		                    	//3.d
+		                    	Utils.decryptFiles(ListaFiltrada, key, pathName_descifrar);
+		                    	System.out.println("The files returned by the query have been successfully decrypted.");
                     	//Fin Pablo/Yeison
 
                     }
@@ -531,51 +531,39 @@ public class TestDynRH {
         }
     }
     
+    
   //ini Pablo/Yeison
-
   	public static void addElementstoHashMap(ArrayList<File> ListaArchivos, byte[] key) {
   		
+  		String ruta = null, ruta_nombre, nombre_archivo;   		
   		System.out.println("Elementos en tabla antes de agregar: " + Rutas.size());
-  		String ruta = null, ruta_nombre, nombre_archivo; 
   		for (int i = 0; i < ListaArchivos.size(); i++){        	
         	ruta_nombre = ListaArchivos.get(i).toString();
-        	nombre_archivo = ruta_nombre.substring(ListaArchivos.get(i).toString().lastIndexOf("\\")+1, ruta_nombre.length());
-            ruta = ruta_nombre.substring(0, ListaArchivos.get(i).toString().lastIndexOf("\\"));	                
+        	nombre_archivo = ruta_nombre.substring(ListaArchivos.get(i).toString().lastIndexOf(File.separator)+1, ruta_nombre.length());
+            ruta = ruta_nombre.substring(0, ListaArchivos.get(i).toString().lastIndexOf(File.separator));	                
             //System.out.println(ruta_nombre);
             System.out.println("Se agrego a la tabla el archivo: " + nombre_archivo);
-            //System.out.println(ruta);	            
-            //la tabla ya controla la repeticion de archivos ya que es (key, value), si encuentra un nuevo archivo en el directorio, lo agrega
-            //sin duplicar los ya registrados
-            Rutas.put(nombre_archivo, ruta);
-            System.out.println(".....Cifrando archivos");
-            Utils.cifrar_archivo(ListaArchivos.get(i), key);
-            System.out.println("Archivos cifrados!!!!!!!!!!!!");
-        }        
-        System.out.println("Elementos actuales en tabla: " + Rutas.size());
-        System.out.println("TABLA DE RUTAS:");
-        //System.out.println(Collections.singletonList(Rutas));
-        
-        /*Set<String> keys = Rutas.keySet();
-        for (String i : keys) {
-            System.out.println(i);
-            System.out.println(Rutas.get(i));
-        }*/
-           
-  	}
+            //1.b.adicionar a la tabla de hashuna pareja (llave,valor) por cada archivo
+            Rutas.put(nombre_archivo, ruta);         
+          } 
+  	    //1.c. Cifrando archivos
+  		System.out.println(".....Cifrando archivos de la ruta: " + ruta);
+  		File dir = new File(ruta);
+        File[] filelist = dir.listFiles();
+        Utils.encryptFiles(filelist, key);
+        System.out.println("Archivos cifrados!!!!!!!!!!!!");
+     }
   	
   	public static void verElementosTabla() {
   		System.out.println("Elementos actuales en tabla: " + Rutas.size());
-        System.out.println("TABLA DE RUTAS:");
-        
+        System.out.println("TABLA DE RUTAS:");        
         Set<String> keys = Rutas.keySet();
         for (String i : keys) {
             System.out.println(i + "|" + Rutas.get(i));
 
         }
   		
-  	}
-  	
-  	
+  	}		
   //Fin Pablo/Yeison
 
 }
