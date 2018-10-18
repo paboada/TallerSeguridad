@@ -1,3 +1,7 @@
+/*
+* Modificado por: Yeison Javier Cuitiva; Pablo Andres Boada
+*/
+
 package lab;
 
 import com.google.common.collect.ArrayListMultimap;
@@ -33,8 +37,6 @@ public class TestDynRH {
 
         while (option != 0) {
             try {
-            	System.out.println(">>>>>>>>>>>>>>>>>>>   TALLER DE SEGURIDAD   <<<<<<<<<<<<<<<<<<<");
-            	System.out.println("");
                 System.out.println("---------------SSE Lab - DynnRH (Dynamic Implementation)---------------");
                 System.out.println("Choose one of the following options: ");
                 System.out.println("1: Test indexing and query");

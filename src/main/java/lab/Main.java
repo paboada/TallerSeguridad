@@ -1,3 +1,7 @@
+/*
+* Modificado por: Yeison Javier Cuitiva; Pablo Andres Boada
+*/
+
 package lab;
 
 import lab.TestDynRH;
@@ -19,11 +23,8 @@ public class Main
         int option = -1;
 
         while (option != 0) {
-            try {
-            	System.out.println(">>>>>>>>>>>>>>>>>>>   TALLER DE SEGURIDAD   <<<<<<<<<<<<<<<<<<<");
-            	System.out.println("");
-            	System.out.println(">>Se hacen modificaciones sobre el codigo inicial con el objetivo de realizar lo propuesto en el taller.");
-            	System.out.println(">>Cambios realizados por: Yeison Javier Cuitiva; Pablo Andres Boada");
+        	try {
+            	System.out.println("Cambios realizados por: Yeison Javier Cuitiva; Pablo Andres Boada");
             	System.out.println("");
                 System.out.println("---------------------- >>      SSE Lab       << ----------------------");
                 System.out.println("Choose one of the following options: ");
